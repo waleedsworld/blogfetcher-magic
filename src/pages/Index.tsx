@@ -35,15 +35,17 @@ const Index = () => {
               </p>
               <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
+                  asChild
                   className="rounded-full px-8 py-6 text-lg font-medium bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all"
                 >
-                  Get Started
+                  <Link to="/contact">Get Started</Link>
                 </Button>
                 <Button
+                  asChild
                   variant="outline"
                   className="rounded-full px-8 py-6 text-lg font-medium border-primary text-primary hover:bg-primary/5 transition-all"
                 >
-                  Learn More
+                  <Link to="/about">Learn More</Link>
                 </Button>
               </div>
             </motion.div>
@@ -114,8 +116,8 @@ const Index = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.1 * (index + 1) }}
                 >
-                  <Link 
-                    to={`/blog/${post.slug}`}
+                  <Link
+                    to={`/${post.slug}`}
                     className="group block overflow-hidden rounded-lg border bg-background shadow-sm transition-all hover:shadow-md"
                   >
                     <div className="p-6">
@@ -134,7 +136,7 @@ const Index = () => {
                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                           />
                         </svg>
-                        <time dateTime="2024-03-21">March 21, 2024</time>
+                        <time dateTime="2025-03-21">March 21, 2025</time>
                       </div>
                       <h3 className="text-lg font-semibold text-primary group-hover:text-primary/80 transition-colors">
                         {post.title}
@@ -206,9 +208,10 @@ const Index = () => {
             </p>
             <div className="mt-10">
               <Button
+                asChild
                 className="rounded-full px-8 py-6 text-lg font-medium bg-white text-primary hover:bg-white/90 shadow-lg hover:shadow-xl transition-all"
               >
-                Get Started Now
+                <Link to="/contact">Get Started Now</Link>
               </Button>
             </div>
           </motion.div>

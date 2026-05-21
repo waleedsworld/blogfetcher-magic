@@ -20,8 +20,8 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				sans: ["Inter", "sans-serif"],
-				display: ["SF Pro Display", "Inter", "sans-serif"],
+				sans: ["Plus Jakarta Sans", "system-ui", "sans-serif"],
+				display: ["Sora", "Plus Jakarta Sans", "sans-serif"],
 			},
 			colors: {
 				border: 'hsl(var(--border))',

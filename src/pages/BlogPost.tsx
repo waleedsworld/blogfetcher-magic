@@ -1,17 +1,20 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchBlogPost } from '@/services/blogService';
 import Layout from '@/components/Layout';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
+import TableOfContents from '@/components/TableOfContents';
+import { processMarkdown } from '@/lib/markdown';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 
 const BlogPost = () => {
   const { slug = '' } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  
+  const contentRef = useRef<HTMLDivElement>(null);
+
   const { data: post, isLoading, error } = useQuery({
     queryKey: ['blogPost', slug],
     queryFn: () => fetchBlogPost(slug),
@@ -26,6 +29,25 @@ const BlogPost = () => {
       }
     }
   });
+
+  const { html, headings } = useMemo(
+    () => processMarkdown(post?.content ?? ''),
+    [post?.content]
+  );
+
+  // After the article renders, honor a deep link to a specific heading.
+  useEffect(() => {
+    if (!html || !window.location.hash) return;
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    const target = document.getElementById(id);
+    if (target) {
+      // Defer to the next frame so layout (and the sticky offset) is settled.
+      requestAnimationFrame(() => {
+        const top = target.getBoundingClientRect().top + window.scrollY - 96;
+        window.scrollTo({ top, behavior: 'smooth' });
+      });
+    }
+  }, [html]);
 
   useEffect(() => {
     // Update document title when post data loads
@@ -51,14 +73,16 @@ const BlogPost = () => {
     return (
       <Layout>
         <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto">
-            <div className="animate-pulse space-y-6">
-              <div className="h-10 bg-primary/10 rounded w-3/4"></div>
-              <div className="h-4 bg-primary/10 rounded w-1/2"></div>
-              <div className="space-y-4">
-                <div className="h-4 bg-primary/10 rounded"></div>
-                <div className="h-4 bg-primary/10 rounded"></div>
-                <div className="h-4 bg-primary/10 rounded w-5/6"></div>
+          <div className="max-w-3xl mx-auto" role="status" aria-live="polite" aria-busy="true">
+            <span className="sr-only">Loading article…</span>
+            <div className="space-y-6">
+              <div className="h-11 w-3/4 rounded-lg shimmer"></div>
+              <div className="h-4 w-1/2 rounded shimmer"></div>
+              <div className="space-y-4 pt-6">
+                <div className="h-4 rounded shimmer"></div>
+                <div className="h-4 rounded shimmer"></div>
+                <div className="h-4 w-5/6 rounded shimmer"></div>
+                <div className="h-4 w-11/12 rounded shimmer"></div>
               </div>
             </div>
           </div>
@@ -91,7 +115,8 @@ const BlogPost = () => {
   return (
     <Layout>
       <article className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto">
+        <div className="mx-auto max-w-6xl lg:grid lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-12">
+          <div className="min-w-0 max-w-3xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -103,6 +128,8 @@ const BlogPost = () => {
             </h1>
             <div className="mt-4 flex items-center text-muted-foreground">
               <svg
+                aria-hidden="true"
+                focusable="false"
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5 mr-2"
                 fill="none"
@@ -125,12 +152,18 @@ const BlogPost = () => {
             </p>
           </motion.div>
 
+          {/* Table of contents — collapsible on mobile, sticky sidebar on desktop */}
+          <div className="lg:hidden">
+            <TableOfContents headings={headings} contentRef={contentRef} />
+          </div>
+
           <motion.div
+            ref={contentRef}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <MarkdownRenderer markdown={post.content} />
+            <MarkdownRenderer html={html} />
           </motion.div>
 
           <motion.div 
@@ -142,18 +175,24 @@ const BlogPost = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
               <p className="text-lg font-semibold text-primary">Share this article</p>
               <div className="mt-4 sm:mt-0 flex space-x-4">
-                <button className="text-muted-foreground hover:text-primary transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
+                <button type="button" aria-label="Share on Twitter" className="text-muted-foreground hover:text-primary transition-colors">
+                  <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
                 </button>
-                <button className="text-muted-foreground hover:text-primary transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                <button type="button" aria-label="Share on Facebook" className="text-muted-foreground hover:text-primary transition-colors">
+                  <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
                 </button>
-                <button className="text-muted-foreground hover:text-primary transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                <button type="button" aria-label="Share on LinkedIn" className="text-muted-foreground hover:text-primary transition-colors">
+                  <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg>
                 </button>
               </div>
             </div>
           </motion.div>
+          </div>
+
+          {/* Desktop sticky table of contents */}
+          <aside className="hidden lg:block">
+            <TableOfContents headings={headings} contentRef={contentRef} />
+          </aside>
         </div>
       </article>
     </Layout>

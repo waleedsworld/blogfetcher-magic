@@ -11,9 +11,14 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   return (
     <div className="flex min-h-screen flex-col">
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
       <Navbar />
-      <motion.main 
-        className="flex-1"
+      <motion.main
+        id="main-content"
+        tabIndex={-1}
+        className="flex-1 focus:outline-none"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}

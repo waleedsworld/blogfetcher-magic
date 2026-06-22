@@ -1,13 +1,43 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
+import { CommandPaletteTrigger } from './CommandPalette';
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+
+  // Close the mobile drawer whenever the route changes (covers back/forward
+  // navigation and programmatic redirects, not just link clicks).
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname]);
+
+  // Robustness for narrow-screen edge cases: close on Escape, and close if the
+  // viewport grows past the md breakpoint (e.g. tablet rotation) so a stale
+  // open-state can't linger while the desktop nav is showing.
+  useEffect(() => {
+    if (!open) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    const mql = window.matchMedia('(min-width: 768px)');
+    const onDesktop = (e: MediaQueryListEvent) => {
+      if (e.matches) setOpen(false);
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    mql.addEventListener('change', onDesktop);
+
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+      mql.removeEventListener('change', onDesktop);
+    };
+  }, [open]);
 
   return (
     <motion.header
@@ -24,12 +54,12 @@ const Navbar = () => {
               className="flex items-center gap-2 text-primary transition-opacity hover:opacity-90"
               onClick={() => setOpen(false)}
             >
-              <span className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold">DS</span>
+              <span aria-hidden="true" className="h-8 w-8 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-brand" style={{ backgroundImage: 'linear-gradient(135deg, hsl(var(--brand)), hsl(var(--brand-2)))' }}>DS</span>
               <span className="font-display text-lg font-medium">Digital Software Planet</span>
             </Link>
           </div>
 
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-8" aria-label="Primary">
             {navItems.map((item) => (
               <NavItem
                 key={item.href}
@@ -40,15 +70,17 @@ const Navbar = () => {
             ))}
           </nav>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
+            <CommandPaletteTrigger />
             <ThemeToggle />
             <button
               className="md:hidden text-primary p-2 rounded-md hover:bg-primary/5 transition-colors"
               aria-label="Toggle menu"
               aria-expanded={open}
+              aria-controls="mobile-menu"
               onClick={() => setOpen((v) => !v)}
             >
-              {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {open ? <X className="h-6 w-6" aria-hidden="true" /> : <Menu className="h-6 w-6" aria-hidden="true" />}
             </button>
           </div>
         </div>
@@ -58,6 +90,8 @@ const Navbar = () => {
       <AnimatePresence>
         {open && (
           <motion.nav
+            id="mobile-menu"
+            aria-label="Mobile"
             className="md:hidden border-t bg-background/95 backdrop-blur-md overflow-hidden"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
@@ -70,6 +104,7 @@ const Navbar = () => {
                   key={item.href}
                   to={item.href}
                   onClick={() => setOpen(false)}
+                  aria-current={location.pathname === item.href ? 'page' : undefined}
                   className={cn(
                     'py-3 px-2 rounded-md text-base font-medium transition-colors',
                     location.pathname === item.href
@@ -97,6 +132,7 @@ interface NavItemProps {
 const NavItem = ({ href, label, active }: NavItemProps) => (
   <Link
     to={href}
+    aria-current={active ? 'page' : undefined}
     className={cn(
       'relative inline-flex items-center px-1 py-2 text-sm font-medium transition-colors',
       active ? 'text-primary' : 'text-primary/80 hover:text-primary'

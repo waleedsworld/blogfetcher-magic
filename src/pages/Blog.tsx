@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { fetchRecentBlogPosts } from '@/services/blogService';
 import Layout from '@/components/Layout';
+import Seo from '@/components/Seo';
 import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { Search, CalendarDays, ArrowRight } from 'lucide-react';
@@ -28,6 +29,11 @@ const Blog = () => {
 
   return (
     <Layout>
+      <Seo
+        title="Blog — Software Licensing Guides & Insights"
+        description="Clear, practical guides on Windows, Microsoft 365, Azure, AWS and volume licensing. Search articles instantly."
+        path="/blog"
+      />
       <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <motion.div
@@ -36,7 +42,7 @@ const Blog = () => {
             transition={{ duration: 0.5 }}
           >
             <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl md:text-6xl">
-              The Blog
+              The <span className="text-gradient">Blog</span>
             </h1>
             <p className="mt-4 max-w-2xl mx-auto text-xl text-muted-foreground">
               Plain-English guides on software licensing, cloud, and the tools
@@ -63,8 +69,17 @@ const Blog = () => {
         </motion.div>
 
         {isLoading ? (
-          <div className="flex justify-center py-12">
-            <div className="h-8 w-8 rounded-full border-4 border-primary/30 border-t-primary animate-spin"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" role="status" aria-live="polite">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} aria-hidden="true" className="rounded-2xl border bg-card p-6 shadow-elegant">
+                <div className="h-4 w-28 rounded-full shimmer" />
+                <div className="mt-4 h-5 w-3/4 rounded shimmer" />
+                <div className="mt-3 h-4 w-full rounded shimmer" />
+                <div className="mt-2 h-4 w-5/6 rounded shimmer" />
+                <div className="mt-6 h-4 w-24 rounded-full shimmer" />
+              </div>
+            ))}
+            <span className="sr-only">Loading articles…</span>
           </div>
         ) : error ? (
           <div className="text-center p-12 bg-destructive/10 rounded-lg max-w-lg mx-auto">
@@ -106,20 +121,21 @@ interface BlogCardProps {
 const BlogCard = ({ title, description, slug }: BlogCardProps) => (
   <Link
     to={`/${slug}`}
-    className="group flex h-full flex-col overflow-hidden rounded-xl border bg-background shadow-sm transition-all hover:shadow-md hover:-translate-y-1"
+    className="group card-lift relative flex h-full flex-col overflow-hidden rounded-2xl border bg-card shadow-elegant"
   >
+    <div className="h-1 w-full bg-gradient-to-r from-[hsl(var(--brand))] via-[hsl(var(--brand-2))] to-[hsl(var(--brand-3))] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
     <div className="flex flex-1 flex-col p-6">
       <div className="mb-2 flex items-center text-sm text-muted-foreground">
-        <CalendarDays className="h-4 w-4 mr-1.5" />
+        <CalendarDays className="h-4 w-4 mr-1.5 text-[hsl(var(--brand))]" />
         <time dateTime="2025-03-21">March 21, 2025</time>
       </div>
-      <h3 className="text-lg font-semibold text-primary group-hover:text-primary/80 transition-colors">
+      <h3 className="text-lg font-semibold text-primary transition-colors group-hover:text-[hsl(var(--brand))]">
         {title}
       </h3>
       <p className="mt-2 line-clamp-3 text-sm/relaxed text-muted-foreground flex-1">
         {description}
       </p>
-      <div className="mt-4 flex items-center text-sm font-medium text-primary">
+      <div className="mt-4 flex items-center text-sm font-medium text-[hsl(var(--brand))]">
         Read more
         <ArrowRight className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" />
       </div>

@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import Layout from "@/components/Layout";
+import Seo from "@/components/Seo";
 import { motion } from "framer-motion";
 
 const NotFound = () => {
@@ -16,6 +17,11 @@ const NotFound = () => {
 
   return (
     <Layout>
+      <Seo
+        title="Page Not Found"
+        description="The page you were looking for doesn't exist or has moved."
+        noindex
+      />
       <div className="container mx-auto px-4 py-20 sm:px-6 lg:px-8 flex flex-col items-center justify-center">
         <motion.div 
           className="text-center max-w-md"
@@ -23,7 +29,7 @@ const NotFound = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-9xl font-bold text-primary/20">404</h1>
+          <h1 className="text-9xl font-bold text-gradient">404</h1>
           <h2 className="mt-8 text-2xl font-bold text-primary">Page Not Found</h2>
           <p className="mt-4 text-muted-foreground">
             We couldn't find the page you were looking for. It might have been removed, renamed, or doesn't exist.

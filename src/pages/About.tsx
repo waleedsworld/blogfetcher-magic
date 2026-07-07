@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/Layout';
+import Seo from '@/components/Seo';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ShieldCheck, Zap, Package, HeartHandshake } from 'lucide-react';
@@ -34,6 +35,11 @@ const values = [
 
 const About = () => (
   <Layout>
+    <Seo
+      title="About — Genuine Licenses, Instant Delivery"
+      description="Why Digital Software Planet exists: authentic, traceable software licenses, instant delivery, and real human support."
+      path="/about"
+    />
     <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -42,7 +48,7 @@ const About = () => (
         className="max-w-3xl mx-auto text-center"
       >
         <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl">
-          About Digital Software Planet
+          About <span className="text-gradient">Digital Software Planet</span>
         </h1>
         <p className="mt-6 text-xl text-muted-foreground">
           We make official software licensing simple, fast, and fairly priced —
@@ -73,9 +79,9 @@ const About = () => (
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 * (index + 1) }}
-            className="bg-background rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow border"
+            className="group card-lift bg-card rounded-2xl p-8 shadow-elegant border"
           >
-            <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-5 text-primary">
+            <div className="h-12 w-12 rounded-xl bg-[hsl(var(--brand)/0.12)] flex items-center justify-center mb-5 text-[hsl(var(--brand))] transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3">
               {value.icon}
             </div>
             <h3 className="text-xl font-semibold text-primary mb-3">{value.title}</h3>

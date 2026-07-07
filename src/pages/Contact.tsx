@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Layout from '@/components/Layout';
+import Seo from '@/components/Seo';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -49,6 +50,11 @@ const Contact = () => {
 
   return (
     <Layout>
+      <Seo
+        title="Contact — Talk to a Human"
+        description="Questions about licensing or an order? Reach the Digital Software Planet team — real people, quick replies."
+        path="/contact"
+      />
       <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

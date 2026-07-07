@@ -3,18 +3,90 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Primary meta -->
     <title>Digital Software Planet — Official Software Licensing & Blog</title>
     <meta name="description" content="Digital Software Planet — your trusted partner for official software licensing, with a fast, clean blog on Windows, Office, Azure and more." />
     <meta name="author" content="Waleed Ajmal" />
+    <meta name="keywords" content="software licensing, Windows licensing, Microsoft Office, Microsoft 365, Azure, AWS, volume licensing, official licenses" />
     <meta name="theme-color" content="#1e293b" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://products.digitalsoftwareplanet.com/" />
 
-    <meta property="og:title" content="Digital Software Planet" />
-    <meta property="og:description" content="Your trusted partner for official software licensing." />
+    <!-- Preconnect + async font load: warms the TLS handshake to Google Fonts
+         and loads the brand type (Plus Jakarta Sans + Sora) without blocking
+         first paint. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap"
+      />
+    </noscript>
+
+    <!-- Icons & PWA -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="apple-touch-icon" href="/icon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Open Graph -->
+    <meta property="og:site_name" content="Digital Software Planet" />
+    <meta property="og:title" content="Digital Software Planet — Official Software Licensing & Blog" />
+    <meta property="og:description" content="Your trusted partner for official software licensing, with a fast, clean blog on Windows, Office, Azure and more." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="/og-cover.svg" />
+    <meta property="og:url" content="https://products.digitalsoftwareplanet.com/" />
+    <meta property="og:image" content="https://products.digitalsoftwareplanet.com/og-cover.svg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Digital Software Planet" />
+    <meta property="og:locale" content="en_US" />
 
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="/og-cover.svg" />
+    <meta name="twitter:title" content="Digital Software Planet — Official Software Licensing & Blog" />
+    <meta name="twitter:description" content="Your trusted partner for official software licensing, with a fast, clean blog on Windows, Office, Azure and more." />
+    <meta name="twitter:image" content="https://products.digitalsoftwareplanet.com/og-cover.svg" />
+    <meta name="twitter:image:alt" content="Digital Software Planet" />
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://products.digitalsoftwareplanet.com/#organization",
+          "name": "Digital Software Planet",
+          "url": "https://products.digitalsoftwareplanet.com/",
+          "logo": "https://products.digitalsoftwareplanet.com/icon.svg",
+          "description": "Your trusted partner for official software licensing."
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://products.digitalsoftwareplanet.com/#website",
+          "url": "https://products.digitalsoftwareplanet.com/",
+          "name": "Digital Software Planet",
+          "publisher": { "@id": "https://products.digitalsoftwareplanet.com/#organization" },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://products.digitalsoftwareplanet.com/blog?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        }
+      ]
+    }
+    </script>
   </head>
 
   <body>

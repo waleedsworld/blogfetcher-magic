@@ -4,10 +4,14 @@ import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchRecentBlogPosts } from '@/services/blogService';
 import Layout from '@/components/Layout';
+import Seo from '@/components/Seo';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import HeroVariantB from '@/components/HeroVariantB';
+import { useVariant } from '@/hooks/useVariant';
 
 const Index = () => {
+  const variant = useVariant();
   const { data: recentPosts } = useQuery({
     queryKey: ['recentBlogPosts'],
     queryFn: fetchRecentBlogPosts,
@@ -15,9 +19,20 @@ const Index = () => {
 
   return (
     <Layout>
-      {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 sm:py-32">
-        <div className="absolute inset-0 bg-[url('/hero-bg.jpg')] bg-cover bg-center opacity-10"></div>
+      <Seo
+        title="Digital Software Planet — Official Software Licensing & Blog"
+        description="Your trusted partner for official software licensing, with a fast, clean blog on Windows, Office, Azure and more."
+        path="/"
+      />
+      {/* Hero Section — A/B tested via ?variant=b */}
+      {variant === 'b' ? (
+        <HeroVariantB />
+      ) : (
+      <section className="relative overflow-hidden py-24 sm:py-36">
+        <div className="absolute inset-0 bg-[url('/hero-bg.jpg')] bg-cover bg-center opacity-[0.06]"></div>
+        <div className="absolute inset-0 bg-grid" aria-hidden="true"></div>
+        <div className="aurora left-[8%] top-[-4rem] h-72 w-72 bg-[hsl(var(--brand)/0.5)]" aria-hidden="true"></div>
+        <div className="aurora right-[6%] top-[2rem] h-80 w-80 bg-[hsl(var(--brand-2)/0.45)]" style={{ animationDelay: '2.5s' }} aria-hidden="true"></div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex flex-col items-center text-center">
             <motion.div
@@ -25,12 +40,19 @@ const Index = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
+              <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-[hsl(var(--brand)/0.3)] bg-[hsl(var(--brand)/0.08)] px-4 py-1.5 text-sm font-medium text-[hsl(var(--brand-strong))] shadow-sm backdrop-blur-sm">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--brand))] opacity-75"></span>
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-[hsl(var(--brand))]"></span>
+                </span>
+                Microsoft-partnered · Genuine licenses
+              </span>
               <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl md:text-6xl lg:text-7xl">
                 Official Software <br />
-                <span className="text-blue-600">Licensing Solutions</span>
+                <span className="text-gradient text-gradient-animate">Licensing Solutions</span>
               </h1>
               <p className="mt-6 max-w-2xl mx-auto text-xl text-muted-foreground">
-                Your trusted partner for all official software licensing needs. 
+                Your trusted partner for all official software licensing needs.
                 Get instant access to premium software with our wholesale and bulk purchase options.
               </p>
               <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
@@ -52,6 +74,7 @@ const Index = () => {
           </div>
         </div>
       </section>
+      )}
 
       {/* Features Section */}
       <section className="py-20 bg-secondary/50">
@@ -77,9 +100,9 @@ const Index = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 * (index + 1) }}
-                className="bg-background rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow"
+                className="group card-lift bg-card rounded-2xl p-8 border border-border shadow-elegant"
               >
-                <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center mb-6 text-blue-600">
+                <div className="h-12 w-12 rounded-xl bg-[hsl(var(--brand)/0.12)] flex items-center justify-center mb-6 text-[hsl(var(--brand))] transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3">
                   {feature.icon}
                 </div>
                 <h3 className="text-xl font-semibold text-primary mb-3">{feature.title}</h3>
@@ -118,7 +141,7 @@ const Index = () => {
                 >
                   <Link
                     to={`/${post.slug}`}
-                    className="group block overflow-hidden rounded-lg border bg-background shadow-sm transition-all hover:shadow-md"
+                    className="group card-lift block overflow-hidden rounded-2xl border bg-card shadow-elegant"
                   >
                     <div className="p-6">
                       <div className="mb-2 flex items-center text-sm text-muted-foreground">
@@ -192,14 +215,17 @@ const Index = () => {
       )}
 
       {/* CTA Section */}
-      <section className="py-20 bg-primary text-white">
+      <section className="py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="max-w-2xl mx-auto text-center"
+            className="relative max-w-5xl mx-auto text-center overflow-hidden rounded-3xl px-6 py-16 sm:py-20 text-white shadow-brand"
+            style={{ backgroundImage: 'linear-gradient(120deg, hsl(var(--brand-strong)), hsl(var(--brand-2)) 55%, hsl(var(--brand-3)))' }}
           >
+            <div className="absolute inset-0 bg-grid opacity-40" aria-hidden="true"></div>
+            <div className="relative">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
               Ready to get started?
             </h2>
@@ -209,10 +235,11 @@ const Index = () => {
             <div className="mt-10">
               <Button
                 asChild
-                className="rounded-full px-8 py-6 text-lg font-medium bg-white text-primary hover:bg-white/90 shadow-lg hover:shadow-xl transition-all"
+                className="rounded-full px-8 py-6 text-lg font-medium bg-white text-[hsl(var(--brand-strong))] hover:bg-white/90 shadow-lg hover:shadow-xl transition-all"
               >
                 <Link to="/contact">Get Started Now</Link>
               </Button>
+            </div>
             </div>
           </motion.div>
         </div>
